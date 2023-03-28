@@ -1,0 +1,164 @@
+# setting the trials and epochs
+n_study_trials: 100
+total_epochs: 300
+
+# for quick check (set 'False' if we want a fresh run)
+resume_check_point: False
+
+# To resume a study of optuna
+study_resume: False
+# Switch to perform quick performance check (True or False)
+quick_check: True
+# switch between quaternion or normal format
+switch_to_quaternion: False
+
+# enter either ('hyd' or 'TE') on the data type
+mode: 'hyd'
+channels: {'hyd': 17, 'TE': 52}
+# sampling_size or choice (For hyd_test_rig)
+sampling_size: {'hyd': 100, 'TE': 40}
+# target label size
+labels: {'hyd':14, 'TE':22}
+
+
+# To use autoencoder
+autoencoder: True
+# windows to increase the samples (used by TE for sliding window)
+window_length: 320
+
+# To autoswitch float16 in nn using automatic mixed precision
+amp_status: False
+
+# sampling_type ("TPESampler" or "RandomSampler") 
+sampling_type: TPESampler
+
+
+# seeding
+# TPE_random_seed: 20
+n_workers: 0
+n_startup_trials: 50
+
+
+# Quickly check the response of certain hyperparameters for hyd_and_TE data
+# (kernel is multiple of 2 and bs is power of 2)
+quick_comb_param: {'optimizer': 'Adam',
+ 'activation': 'Tanhshrink',
+# 'conv_output_features': 32, 'linear_output_features': 128,
+ 'kernel_size': 2,
+ 'batch_size': 2,
+   # 'momentum': 0.50,
+  # 'weight_decay': 0.00051,
+  'lr': 0.088724075104,
+   'dropout1_conv': 0.3,
+   'dropout2_linear': 0.3}
+
+
+# Hyperparameters
+n_conv_layers: 1
+n_linear_layers: 1
+
+conv_output_features: 24
+linear_output_features: 96
+
+
+hyperparmeter_suggestion:
+
+    optimizer:
+        - suggest_categorical
+        # - ["Adam"]
+        - ["Adam", "RMSprop", "Adamax"]
+
+    activation:
+        - suggest_categorical
+        # - ["ReLU", "Tanh"]
+        - ["ReLU", "Tanh", "Tanhshrink"]
+
+    # conv_output_features:
+    #     - suggest_int
+    #     - 8
+    #     - 24
+    #     - 4
+
+    # linear_output_features:
+    #     - suggest_int
+    #     - 32
+    #     - 96
+    #     - 16
+
+# (multiple of 2)
+    kernel_size:
+        - suggest_int
+        - 1
+        - 4
+        - 1 
+
+#power of 2
+    batch_size:
+        - suggest_int
+        - 2
+        - 7
+        - 1
+
+    lr:
+        - suggest_float
+        - 1.0e-6
+        - 1.0e-1
+
+
+    dropout1_conv:
+        - suggest_float
+        - 0
+        - 0.3
+        - 0.1
+
+    dropout2_linear:
+        - suggest_float
+        - 0
+        - 0.3
+        - 0.1
+
+    # ae_lr:
+    #     - suggest_float
+    #     - 0.1e-8
+    #     - 0.1e-2
+    
+    # ae_conv_output_features:
+    #     - suggest_int
+    #     - 64
+    #     - 192
+    #     - 64
+
+ae_epochs: 1
+
+# autoencoders hyperparameters
+ae_lr: 1e-3
+# ae_kernel_size is a multiple of 2
+ae_kernel_size: 2
+ae_activation: "Tanhshrink"
+ae_conv_layers: 2
+ae_linear_layers: 2
+ae_conv_output_features: 32
+ae_linear_features: 64
+
+autoencoders_hyperparameters_suggestion:
+    ae_lr:
+        -suggest_float
+        - 1.0e-6
+        - 1.0e-1
+
+    ae_kernel_size:
+        - suggest_int
+        - 1
+        - 6
+        - 1
+
+    ae_linear_features:
+        - suggest_int
+        - 32
+        - 192
+        - 32
+
+    ae_activation:
+        - suggest_categorical
+        - ["Adam", "RMSprop", "Adamax"]
+
